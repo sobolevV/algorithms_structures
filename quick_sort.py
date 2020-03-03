@@ -1,48 +1,48 @@
 import random
 import asyncio
 import time
+import copy
 
+# def partition(array):
+#     pivot_index = len(array) - 1
+#     pivot = array[pivot_index]
 
-def partition(array):
-    pivot_index = len(array) - 1
-    pivot = array[pivot_index]
+#     i = 0
+#     j = 0
 
-    i = -1
-    j = 0
+#     while j < pivot_index:
+#         if array[j] < pivot:
+#             array[i], array[j] = array[j], array[i]
+#             i += 1
+#         j += 1
 
-    while j < pivot_index:
-        if array[j] < pivot:
-            i += 1
-            array[i], array[j] = array[j], array[i]
-        j += 1
-
-    new_array = array[:i+1] + [pivot] + array[i+1:pivot_index]
-    return new_array, i+1
+#     # new_array = array[:i+1] + [pivot] + array[i+1:pivot_index]
+#     return i+1 # new_array
 
 
 def quick_sort_req(array):
     if len(array) <= 1:
         return array
-    if len(array) == 2:
-        if array[0] >= array[1]:
-            array[1], array[0] = array[0], array[1]
-        return array
+    
+    pivot_index = len(array)//2
+    pivot = array[pivot_index]
+    array = array[:pivot_index] + array[pivot_index+1:] 
+    
+    left, right = [], []
+    for i in range(len(array)):
+        if array[i] <= pivot:
+            left.append(array[i])
+        else:
+            right.append(array[i])
 
-    array, pivot_index = partition(array)
-
-    # sort and back
-    left_sorted = quick_sort_req(array[:pivot_index-1])
-    array[:pivot_index - 1] = left_sorted
-
-    right_sorted = quick_sort_req(array[pivot_index + 1:])
-    array[pivot_index+1:] = right_sorted
+    array = quick_sort_req(left) + [pivot] + quick_sort_req(right)
 
     return array
 
 
 if __name__ == '__main__':
 
-    iterations = 5
+    iterations = 4
     size = 10
 
     sizes = []
@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
     for i in range(iterations):
         unsorted_arr = [random.randint(-size, size) for i in range(size)]
-
+        unsorted_arr_c = unsorted_arr[:] 
         # timer
         start = time.time()
         sorted = quick_sort_req(unsorted_arr)
@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
         # calculate sor times for standard sort
         start_st = time.time()
-        unsorted_arr.sort()
+        unsorted_arr_c.sort()
         end_st = time.time()
 
         # save times
